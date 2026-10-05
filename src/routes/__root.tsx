@@ -8,10 +8,9 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { reportLovableError } from "../lib/lovable-error-reporting";
 import { MotionConfig } from "framer-motion";
 import {
   CursorRing,
@@ -20,6 +19,7 @@ import {
   ScrollProgress,
   ThemeSwitcher,
   WhatsAppButton,
+  LovableFloatButton,
 } from "../components/site/Chrome";
 
 function NotFoundComponent() {
@@ -47,9 +47,6 @@ function NotFoundComponent() {
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
-  useEffect(() => {
-    reportLovableError(error, { boundary: "tanstack_root_error_component" });
-  }, [error]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -91,6 +88,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Delhi-NCR's trusted property consultants." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:title", content: "PanditRealEstate" },
+      { property: "og:description", content: "Delhi-NCR's trusted property consultants." },
+      { property: "og:url", content: "https://panditrealeatae.lovable.app" },
     ],
     links: [
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -137,6 +137,7 @@ function RootComponent() {
         <Footer />
         <ThemeSwitcher />
         <WhatsAppButton />
+        <LovableFloatButton />
         <CursorRing />
       </MotionConfig>
     </QueryClientProvider>

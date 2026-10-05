@@ -211,3 +211,36 @@ export function Footer() {
     </footer>
   );
 }
+
+export function LovableFloatButton() {
+  return (
+    <motion.a
+      href="https://lovable.dev"
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Built with Lovable"
+      whileHover={{scale: 1.1}}
+      whileTap={{scale: 0.9}}
+      initial={{scale: 0}}
+      animate={{scale: 1}}
+      transition={{delay: 1.2, type: "spring"}}
+      className="fixed bottom-24 right-6 z-50 hidden lg:flex items-center gap-2 rounded-full bg-background/80 backdrop-blur border border-border px-3 py-2 text-xs font-medium text-muted-foreground shadow-elegant hover:text-primary hover:border-primary transition-colors"
+    >
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 40 40"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        aria-hidden="true"
+      >
+        <rect width="40" height="40" rx="8" fill="#18181b" />
+        <path
+          d="M20 8L32 28H8L20 8Z"
+          fill="#a78bfa"
+        />
+      </svg>
+      Built with Lovable
+    </motion.a>
+  );
+}

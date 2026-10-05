@@ -1,13 +1,12 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { BedDouble, ChevronDown, MapPin, Maximize, Quote, X } from "lucide-react";
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import {
   clients,
   faqs,
   gallery,
   process,
   properties,
-  serviceFilters,
   services,
   testimonials,
   whyUs,
@@ -54,9 +53,32 @@ function ServiceCard({ s, onOpen }: { s: (typeof services)[number]; onOpen: () =
 }
 
 export function Services() {
-  const [filter, setFilter] = useState<(typeof serviceFilters)[number]>("All");
   const [open, setOpen] = useState<(typeof services)[number] | null>(null);
-  const list = filter === "All" ? services : services.filter((s) => s.category === filter);
+  const [showAll, setShowAll] = useState(false);
+
+  // Mobile carousel state
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [dragging, setDragging] = useState(false);
+  const dragStartX = useRef(0);
+  const scrollStartX = useRef(0);
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (!trackRef.current) return;
+    setDragging(true);
+    dragStartX.current = e.clientX;
+    scrollStartX.current = trackRef.current.scrollLeft;
+    trackRef.current.setPointerCapture(e.pointerId);
+  };
+  const onPointerMove = (e: React.PointerEvent) => {
+    if (!dragging || !trackRef.current) return;
+    trackRef.current.scrollLeft = scrollStartX.current - (e.clientX - dragStartX.current);
+  };
+  const onPointerUp = () => setDragging(false);
+
+  // first row = 4 services; second row = next 4
+  const row1 = services.slice(0, 4);
+  const row2 = services.slice(4, 8);
+
   return (
     <Section id="services" tone="light">
       <SectionHeading
@@ -66,26 +88,80 @@ export function Services() {
         accent="Consultancy"
         sub="18 specialised services under one roof — from your first site visit to the final registry."
       />
-      <div className="mb-10 flex flex-wrap justify-center gap-2">
-        {serviceFilters.map((f) => (
-          <button
-            key={f}
-            onClick={() => setFilter(f)}
-            className={`relative rounded-full px-5 py-2 text-sm font-semibold transition-colors ${filter === f ? "text-surface" : "text-surface-foreground hover:text-brand"}`}
-          >
-            {filter === f && <motion.span layoutId="svc-filter" className="absolute inset-0 rounded-full bg-brand" />}
-            <span className="relative">{f}</span>
-          </button>
+
+      {/* ── Desktop grid (unchanged) ── */}
+      <motion.div layout className="hidden gap-5 sm:grid sm:grid-cols-2 lg:grid-cols-3">
+        {services.map((s) => (
+          <ServiceCard key={s.title} s={s} onOpen={() => setOpen(s)} />
         ))}
-      </div>
-      <motion.div layout className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        <AnimatePresence mode="popLayout">
-          {list.map((s) => (
-            <ServiceCard key={s.title} s={s} onOpen={() => setOpen(s)} />
-          ))}
-        </AnimatePresence>
       </motion.div>
 
+      {/* ── Mobile carousel: 2 rows of 4, then View More ── */}
+      <div className="sm:hidden">
+        {/* Row 1 */}
+        <div
+          ref={trackRef}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerLeave={onPointerUp}
+          className="no-scrollbar flex gap-4 overflow-x-auto pb-2 select-none"
+          style={{ cursor: dragging ? "grabbing" : "grab" }}
+        >
+          {row1.map((s) => (
+            <div key={s.title} className="w-[72vw] max-w-[260px] shrink-0">
+              <ServiceCard s={s} onOpen={() => setOpen(s)} />
+            </div>
+          ))}
+        </div>
+
+        {/* Row 2 */}
+        <div className="mt-4 flex gap-4 overflow-x-auto pb-2 no-scrollbar select-none">
+          {row2.map((s) => (
+            <div key={s.title} className="w-[72vw] max-w-[260px] shrink-0">
+              <ServiceCard s={s} onOpen={() => setOpen(s)} />
+            </div>
+          ))}
+        </div>
+
+        {/* View More button */}
+        <div className="mt-6 flex justify-center">
+          <motion.button
+            whileHover={{ scale: 1.04 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => setShowAll(true)}
+            className={`${btnPrimary} px-8 py-3`}
+          >
+            View More Services →
+          </motion.button>
+        </div>
+      </div>
+
+      {/* ── All Services full-screen modal (mobile View More) ── */}
+      <AnimatePresence>
+        {showAll && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[90] overflow-y-auto bg-background p-5"
+          >
+            <div className="flex items-center justify-between mb-6 sticky top-0 bg-background py-3 z-10 border-b border-border">
+              <h2 className="text-2xl font-bold">All Services</h2>
+              <button aria-label="Close" onClick={() => setShowAll(false)} className="rounded-full p-2 hover:bg-muted">
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+            <div className="grid gap-4 grid-cols-1">
+              {services.map((s) => (
+                <ServiceCard key={s.title} s={s} onOpen={() => { setShowAll(false); setOpen(s); }} />
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* ── Service detail modal ── */}
       <AnimatePresence>
         {open && (
           <motion.div

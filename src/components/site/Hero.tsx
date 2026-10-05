@@ -128,7 +128,7 @@ export function Hero() {
           transition={{ duration: 1.4 }}
           className="absolute inset-0"
         >
-          <img src={heroSlides[idx].image} alt="" className="animate-kenburns h-full w-full object-cover" />
+          <img src={heroSlides[idx]!.image} alt="" className="animate-kenburns h-full w-full object-cover" />
         </motion.div>
       </AnimatePresence>
       <div className="hero-overlay absolute inset-0" />
@@ -247,7 +247,7 @@ export function Hero() {
           transition={{ delay: 0.6, duration: 0.8 }}
           className="hidden lg:block"
         >
-          <TiltCard slide={heroSlides[idx]} />
+          <TiltCard slide={heroSlides[idx]!} />
           <div className="mt-10 flex items-center gap-4">
             <button aria-label="Previous" onClick={() => go(-1)} className="glass grid h-10 w-10 place-items-center rounded-full hover:text-primary">
               <ChevronLeft className="h-5 w-5" />

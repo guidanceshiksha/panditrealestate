@@ -272,7 +272,7 @@ export function Testimonials() {
     const t = setTimeout(() => setI((v) => (v + 1) % testimonials.length), 5000);
     return () => clearTimeout(t);
   }, [i]);
-  const t = testimonials[i];
+  const t = testimonials[i]!;
   return (
     <Section>
       <SectionHeading eyebrow="Testimonials" title="Words From Our" accent="Families" />

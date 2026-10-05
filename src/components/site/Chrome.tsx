@@ -105,7 +105,7 @@ export function ThemeSwitcher() {
     if (saved) apply(saved);
   }, []);
   function apply(id: string) {
-    document.documentElement.dataset.theme = id;
+    document.documentElement.dataset["theme"] = id;
     localStorage.setItem("pre-theme", id);
     setActive(id);
   }

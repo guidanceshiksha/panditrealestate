@@ -11,6 +11,7 @@ import {
   Testimonials,
   WhyUs,
 } from "@/components/site/Sections";
+import { FlagshipCarousel } from "@/components/site/FlagshipCarousel";
 
 const title = "PanditRealEstate — Trusted Property Consultants in Delhi-NCR";
 const description =
@@ -39,6 +40,7 @@ function Index() {
       <Services />
       <WhyUs />
       <Properties />
+      <FlagshipCarousel />
       <Process />
       <Gallery />
       <Testimonials />

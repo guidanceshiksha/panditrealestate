@@ -22,9 +22,9 @@ function RotatingWord() {
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: "-100%", opacity: 0 }}
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="text-shimmer italic"
+          className="inline-block"
         >
-          {rotatingWords[i]}
+          <span className="text-shimmer inline-block pr-2 italic">{rotatingWords[i]}</span>
         </motion.span>
       </AnimatePresence>
     </span>
